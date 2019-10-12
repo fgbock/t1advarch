@@ -21,4 +21,4 @@ mm_unroll.exe:
 	$(COMPILER) $(FLG) -o $(BIN)\mm_combo.exe $(SRC)\mm_combo.c
 	
 clean:
-	rm $(BIN)\mm.exe $(BIN)\mm_trans.exe $(BIN)\mm_duff.exe
+	rm $(BIN)\mm.exe $(BIN)\mm_trans.exe $(BIN)\mm_duff.exe $(BIN)\mm_combo.exe $(BIN)\mm_unroll.exe

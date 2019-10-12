@@ -5,39 +5,63 @@
 //#define IMPRIME
 
 void multiplica(int m, int n, int **matA, int **matB, int **matC){
-	int i, j, k, som, rounds;
+	int i, j, k, som, round;
 	for (i=0;i<m;i++){
 		for(j=0;j<n;j++){
-			rounds = m  / 8;
-			switch (m%8){
+			k = 0;
+			round = m / 16;
+			switch (m % 16){
+				start:
 				case 0:
-					while(!(rounds == 0)){
-						rounds--;
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						printf("k is %d\n",k);
-						k++;
-				case 7:
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						k++;
-				case 6:
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						k++;				
-				case 5:
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						k++;				
-				case 4:
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						k++;				
-				case 3:
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						k++;				
-				case 2:
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						k++;				
+					round--;
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
 				case 1:
-						matC[i][j]+= matA[i][k]*matB[k][j];
-						k++;				
-				};
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 2:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 3:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 4:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 5:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 6:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 7:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 8:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 9:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 10:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 11:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 12:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 13:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 14:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+				case 15:
+					matC[i][j]+= matA[i][k]*matB[k][j];
+					k++;
+					if (round > 0) goto start;
 			}
 		}
 	}
