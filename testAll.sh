@@ -12,7 +12,7 @@ done
 printf "TRANS" >> output.csv
 printf '\n' >> output.csv
 for ((k=1; k<=30; k++)); do
-	./bin/mm_trans.exe] "1024" "1024" >> output.csv
+	./bin/mm_trans.exe "1024" "1024" >> output.csv
 done
 printf '\n' >> output.csv
 
