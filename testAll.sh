@@ -2,11 +2,13 @@
 set -x #echo on
 
 # original matrix mult
-printf '\n' >> output.csv
+
 printf "ORIGINAL" >> output.csv
+printf '\n' >> output.csv
 for ((k=1; k<=30; k++)); do
 	./bin/mm.exe "1024" "1024" >> output.csv
 done
+printf '\n' >> output.csv
 
 # matrix transpose to enhance mm
 printf "TRANS" >> output.csv
@@ -48,7 +50,7 @@ for ((k2=1; k2<=30; k2++)); do
 done
 printf '\n' >> output.csv
 
-# original with O1 Flag enabled
+# original with O2 Flag enabled
 printf "ORIGINAL O2" >> output.csv
 printf '\n' >> output.csv
 for ((k2=1; k2<=30; k2++)); do
@@ -56,10 +58,19 @@ for ((k2=1; k2<=30; k2++)); do
 done
 printf '\n' >> output.csv
 
-# original with O1 Flag enabled
+# original with O3 Flag enabled
 printf "ORIGINAL O3" >> output.csv
 printf '\n' >> output.csv
 for ((k2=1; k2<=30; k2++)); do
 	./bin/mm_O3.exe "1024" "1024" >> output.csv
 done
 printf '\n' >> output.csv
+
+# transpose + duff
+printf "COMBO_DUFF" >> output.csv
+printf '\n' >> output.csv
+for ((k=1; k<=30; k++)); do
+	./bin/mm_combo_duff.exe "1024" "1024" >> output.csv
+done
+printf '\n' >> output.csv
+
