@@ -133,9 +133,9 @@ int main (int argc, char *argv[]) {
 	printf("Depois da Multiplicacao!\n");
 	imprime(m, n, matA);
 	imprime(m, n, matB);
+	imprime(m, n, matC);
 	printf("\n");
 	#endif
-	imprime(m, n, matC);
 	
 	printf("%5lf\n", timeElapsed);
 
