@@ -36,25 +36,20 @@ void multiplica(int m, int n, int **matA, int **matB, int **matC, int **matD){
 			// They will work as an accumulator
 			__m256i sum = _mm256_setzero_si256();
 			for (int k = 0; k < m; k++) {
-				// Load continuous memory
-				// r1[0] = matA[i][k+0]
-				// r2[1] = matA[i][k+1]
-				// ...
-				// r2[7] = matA[i][k+7]
-				__m256i r1 = _mm256_set1_epi32(matA[i][k]);
-				
-				// Load from matB[k][j] to every vector position
-				// r2[0] = matB[k][j]
-				// r2[1] = matB[k][j]
-				// ...
-				// r2[7] = matB[k][j]
-				__m256i r2 = _mm256_loadu_si256((__m256i*)&matD[j][k]);
-				
-				// Multiply avx registers
-				__m256i multiplied = _mm256_mullo_epi32(r1, r2);
+				{
+					__m256i r1 = _mm256_set1_epi32(matA[i][k]);
+					__m256i r2 = _mm256_loadu_si256((__m256i*)&matD[j][k]);
+					__m256i multiplied = _mm256_mullo_epi32(r1, r2);
+					sum = _mm256_add_epi32(sum, multiplied);
+				}
 
-				// Add on cell accumulator
-				sum = _mm256_add_epi32(sum, multiplied);
+				// Repeat
+				{
+					__m256i r1 = _mm256_set1_epi32(matA[i][k+1]);
+					__m256i r2 = _mm256_loadu_si256((__m256i*)&matD[j][k+1]);
+					__m256i multiplied = _mm256_mullo_epi32(r1, r2);
+					sum = _mm256_add_epi32(sum, multiplied);
+				}
 			}
 			// Store final cell value for each column
 			_mm256_storeu_si256((__m256i*)&matC[i][j], sum);
