@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <sys/time.h>
-#define IMPRIME
+// #define IMPRIME
 
 void multiplica(int m, int n, int **matA, int **matB, int **matC){
 	int i, j, k, som, p = m/8;

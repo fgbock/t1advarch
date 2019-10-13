@@ -6,7 +6,7 @@ FLGO2 = -O2
 FLGO2 = -O3
 COMPILER = gcc
 
-all: mm_O0.exe mm_O1.exe mm_O2.exe mm_O3.exe mm_O0_duff.exe mm_O0_trans.exe mm_O0_unroll.exe mm_O0_simd.exe mm_O0_combo_unroll_trans.exe mm_O0_combo_simd_trans_unroll.exe mm_O2_combo_simd_trans_unroll.exe
+all: mm_O0.exe mm_O1.exe mm_O2.exe mm_O3.exe mm_O0_duff.exe mm_O0_trans.exe mm_O0_unroll.exe mm_O0_simd.exe mm_O0_combo_unroll_trans.exe mm_O0_combo_simd_unroll.exe mm_O2_combo_simd_unroll.exe
 
 mm_O0.exe:
 	$(COMPILER) -O0 -march=native -o $(BIN)/mm_O0.exe $(SRC)/mm.c
@@ -35,11 +35,11 @@ mm_O0_simd.exe:
 mm_O0_combo_unroll_trans.exe:
 	$(COMPILER) -O0 -march=native -o $(BIN)/mm_O0_combo_unroll_trans.exe $(SRC)/mm_combo_unroll_trans.c	
 
-mm_O0_combo_simd_trans_unroll.exe:
-	$(COMPILER) -O0 -march=native -o $(BIN)/mm_O0_combo_simd_trans_unroll.exe $(SRC)/mm_combo_simd_trans_unroll.c
+mm_O0_combo_simd_unroll.exe:
+	$(COMPILER) -O0 -march=native -o $(BIN)/mm_O0_combo_simd_unroll.exe $(SRC)/mm_combo_simd_unroll.c
 
-mm_O2_combo_simd_trans_unroll.exe:
-	$(COMPILER) -O2 -march=native -o $(BIN)/mm_O2_combo_simd_trans_unroll.exe $(SRC)/mm_combo_simd_trans_unroll.c
+mm_O2_combo_simd_unroll.exe:
+	$(COMPILER) -O2 -march=native -o $(BIN)/mm_O2_combo_simd_unroll.exe $(SRC)/mm_combo_simd_unroll.c
 
 clean:
 	rm $(BIN)/*

@@ -20,36 +20,31 @@ int **aloca(int m, int n, int **matriz){
 }
 
 
-void multiplica(int m, int n, int **matA, int **matB, int **matC, int **matD){
+void multiplica(int m, int n, int **matA, int **matB, int **matC){
 	int i, j, k, som;
 
-
-	for(i = 0; i < m; i++){
-		for(j =0; j < n; j++){
-			matD[j][i] = matB[i][j];
-		}
-	}
 	for (i=0;i<m;i++){
 		// += 8 columns
 		for(j=0; j<n; j+= 8){
 			// Each integer on the avx register is a cell on the result matrix.
 			// They will work as an accumulator
 			__m256i sum = _mm256_setzero_si256();
-			for (int k = 0; k < m; k++) {
+			for (int k = 0; k < m; k+= 2) {
 				{
 					__m256i r1 = _mm256_set1_epi32(matA[i][k]);
-					__m256i r2 = _mm256_loadu_si256((__m256i*)&matD[j][k]);
+					__m256i r2 = _mm256_loadu_si256((__m256i*)&matB[k][j]);
+					__m256i multiplied = _mm256_mullo_epi32(r1, r2);
+					sum = _mm256_add_epi32(sum, multiplied);
+				}
+				// Repeat
+
+				{
+					__m256i r1 = _mm256_set1_epi32(matA[i][k+1]);
+					__m256i r2 = _mm256_loadu_si256((__m256i*)&matB[k+1][j]);
 					__m256i multiplied = _mm256_mullo_epi32(r1, r2);
 					sum = _mm256_add_epi32(sum, multiplied);
 				}
 
-				// Repeat
-				{
-					__m256i r1 = _mm256_set1_epi32(matA[i][k+1]);
-					__m256i r2 = _mm256_loadu_si256((__m256i*)&matD[j][k+1]);
-					__m256i multiplied = _mm256_mullo_epi32(r1, r2);
-					sum = _mm256_add_epi32(sum, multiplied);
-				}
 			}
 			// Store final cell value for each column
 			_mm256_storeu_si256((__m256i*)&matC[i][j], sum);
@@ -97,7 +92,7 @@ void desaloca(int m, int n, int **matriz){
 }
 
 int main (int argc, char *argv[]) {
-	int **matA,**matB,**matC, **matD; 
+	int **matA,**matB,**matC; 
 	int m,n,i,j,k; // m(linhas) e n (colunas)
 	double clockBegin;
 	double timeElapsed;
@@ -112,7 +107,6 @@ int main (int argc, char *argv[]) {
 	matA=aloca(m, n, matA);
 	matB=aloca(m, n, matB);
 	matC=aloca(m, n, matC);
-	matD=aloca(n, m, matD);
 	
 	#ifdef IMPRIME
 	printf("Antes da inicializacao!\n");
@@ -136,7 +130,7 @@ int main (int argc, char *argv[]) {
 	
 	/*MULTIPLICA AS MATRIZES A e B*/
 	clockBegin = GetTime();
-	multiplica(m, n, matA, matB, matC, matD);
+	multiplica(m, n, matA, matB, matC);
 	timeElapsed = (GetTime() - clockBegin)/1000000;	
 			
 	#ifdef IMPRIME
