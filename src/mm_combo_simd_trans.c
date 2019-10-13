@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
+#include <immintrin.h>
 #include <sys/time.h>
 //#define IMPRIME
 
@@ -20,71 +21,43 @@ int **aloca(int m, int n, int **matriz){
 
 
 void multiplica(int m, int n, int **matA, int **matB, int **matC, int **matD){
-	int i, j, k, som, round;
+	int i, j, k, som;
 
-	int p = m / 8;
+
 	for(i = 0; i < m; i++){
 		for(j =0; j < n; j++){
 			matD[j][i] = matB[i][j];
 		}
 	}
 	for (i=0;i<m;i++){
-		for(j=0;j<n;j++){
-			k = 0;
-			round = m / 16;
-			switch (m % 16){
-				start:
-				case 0:
-					round--;
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 1:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 2:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 3:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 4:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 5:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 6:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 7:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 8:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 9:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 10:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 11:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 12:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 13:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 14:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-				case 15:
-					matC[i][j]+= matA[i][k]*matD[j][k];
-					k++;
-					if (round > 0) goto start;
+		// += 8 columns
+		for(j=0; j<n; j+= 8){
+			// Each integer on the avx register is a cell on the result matrix.
+			// They will work as an accumulator
+			__m256i sum = _mm256_setzero_si256();
+			for (int k = 0; k < m; k++) {
+				// Load continuous memory
+				// r1[0] = matA[i][k+0]
+				// r2[1] = matA[i][k+1]
+				// ...
+				// r2[7] = matA[i][k+7]
+				__m256i r1 = _mm256_set1_epi32(matA[i][k]);
+				
+				// Load from matB[k][j] to every vector position
+				// r2[0] = matB[k][j]
+				// r2[1] = matB[k][j]
+				// ...
+				// r2[7] = matB[k][j]
+				__m256i r2 = _mm256_loadu_si256((__m256i*)&matD[j][k]);
+				
+				// Multiply avx registers
+				__m256i multiplied = _mm256_mullo_epi32(r1, r2);
+
+				// Add on cell accumulator
+				sum = _mm256_add_epi32(sum, multiplied);
 			}
+			// Store final cell value for each column
+			_mm256_storeu_si256((__m256i*)&matC[i][j], sum);
 		}
 	}
 }
